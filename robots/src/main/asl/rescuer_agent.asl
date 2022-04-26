@@ -1,11 +1,6 @@
 facing(top).
 position(0, 0).
 status(exploring).
-obstacle(Dir) :- robot(Dir).
-
-opposite(top, bottom).
-opposite(left, right).
-opposite(X, Y) :- opposite(Y, X).
 
 !rescue.
 
@@ -25,23 +20,7 @@ opposite(X, Y) :- opposite(Y, X).
     .print("Let's go home!")
     !explore.
 
-+!come_back : status(rescuing(Agent)) & neighbour(Agent) <-
-    !go_towards_home;
-    !come_back.
-+!come_back : status(rescuing(Agent)) & not(neighbour(Agent)) <-
-    .wait({ +neighbour(Agent) });
-    !come_back.
-
-+!go_towards_home : position(0, 0) <- true.
-+!go_towards_home : position(X, _) & X > 0 <- !go_towards_edge(bottom).
-+!go_towards_home : position(X, _) & X < 0 <- !go_towards_edge(top).
-+!go_towards_home : position(_, Y) & Y > 0 <- !go_towards_edge(left).
-+!go_towards_home : position(_, Y) & Y < 0 <- !go_towards_edge(right).
-
-+!go_towards_edge(F) : facing(F) <- !go(forward).
-+!go_towards_edge(F) : opposite(F, O) & facing(O) <- !go(backward).
-+!go_towards_edge(F) : not(facing(F)) <- !go(right).
--!go_towards_edge(F) <- !go(left).
++!come_back <- .fail. /* TODO */
 
 +!go_on(0) <- true.
 +!go_on(N) : N > 0 & free(forward) <-
@@ -78,6 +57,4 @@ opposite(X, Y) :- opposite(Y, X).
 +position(X, Y) <- .print("I'm in (", X, ", ", Y, ")").
 
 +neighbour(Agent) : status(exploring) <-
-    .print("Hello ", Agent, "! Follow me!");
-    .send(Agent, tell, go_home);
-    -+status(rescuing(Agent)).
+    .print("Hello ", Agent, "! Follow me!").
