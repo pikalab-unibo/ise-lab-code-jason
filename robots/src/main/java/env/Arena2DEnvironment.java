@@ -57,37 +57,26 @@ public class Arena2DEnvironment extends Environment {
 
     @Override
     public Collection<Literal> getPercepts(String agName) {
-        initializeAgentIfNeeded(agName);
-        return Stream.of(
-                surroundingPercepts(agName),
-                neighboursPercepts(agName)
-        ).flatMap(Collection::stream)
-        .collect(Collectors.toList());
-
+        throw new IllegalStateException("not implemented");
     }
 
-    private Literal proximityPerceptFor(Direction direction, Vector2D position) {
-        if (model.getAgentByPosition(position).isPresent()) {
-            return Literal.parseLiteral(String.format("robot(%s)", direction.name().toLowerCase()));
-        } else if (model.isPositionOutside(position)) {
-            return Literal.parseLiteral(String.format("obstacle(%s)", direction.name().toLowerCase()));
-        } else {
-            return Literal.parseLiteral(String.format("free(%s)", direction.name().toLowerCase()));
-        }
+    private boolean isPositionObstacleFor(String agent, Vector2D position) {
+        return model.isPositionOutside(position)
+                || model.getAgentByPosition(position)
+                .filter(it -> !it.equals(agent)).isPresent();
     }
 
     private Collection<Literal> surroundingPercepts(String agent) {
-        return model.getAgentSurroundingPositions(agent)
-                .entrySet().stream()
-                .map(it -> proximityPerceptFor(it.getKey(), it.getValue()))
-                .collect(Collectors.toList());
+        throw new IllegalStateException("not implemented");
     }
 
     private Collection<Literal> neighboursPercepts(String agent) {
-        return model.getAgentNeighbours(agent).stream()
+        Collection<Literal> neighbours = model.getAgentNeighbours(agent).stream()
                 .map(it -> String.format("neighbour(%s)", it))
                 .map(Literal::parseLiteral)
                 .collect(Collectors.toList());
+
+        return neighbours;
     }
 
     /**
@@ -101,13 +90,13 @@ public class Arena2DEnvironment extends Environment {
         if (RAND.nextDouble() < model.getSlideProbability()) {
             result = false;
         } else if (action.equals(moveForward)) {
-            result = model.moveAgent(ag, 1, FORWARD);
+            throw new IllegalStateException("not implemented");
         } else if (action.equals(moveRight)) {
-            result = model.moveAgent(ag, 1, RIGHT);
+            throw new IllegalStateException("not implemented");
         } else if (action.equals(moveBackward)) {
-            result = model.moveAgent(ag, 1, BACKWARD);
+            throw new IllegalStateException("not implemented");
         } else if (action.equals(moveLeft)) {
-            result = model.moveAgent(ag, 1, LEFT);
+            throw new IllegalStateException("not implemented");
         } else if (action.equals(moveRandom)) {
             Direction rd = Direction.random();
             result = model.moveAgent(ag, 1, rd);
